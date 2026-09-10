@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>숲속 꼬마 수학 게임</title>
+
+  <style>
+    :root {
+      --sky: #dff5ff;
+      --cream: #fff8e8;
+      --pink: #ffd9e5;
+      --blue: #cfeeff;
+      --green: #dff4cf;
+      --purple: #eadcff;
+      --yellow: #fff0b8;
+      --brown: #9b6435;
+      --dark-brown: #70401f;
+      --text: #4e5361;
+      --red: #ef6262;
+      --blue-strong: #5caee8;
+      --green-strong: #72bb65;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family:
+        "Pretendard",
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(#c9efff 0%, #eafaff 54%, #e1f4d7 100%);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .title {
+      text-align: center;
+      margin: 8px 0 16px;
+      color: #487889;
+      font-size: clamp(24px, 4vw, 40px);
+      letter-spacing: -1px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .menu button {
+      min-height: 82px;
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      border-radius: 24px;
+      color: #4f5b67;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 17px;
+      box-shadow: 0 5px 0 rgba(85, 125, 140, 0.12);
+      transition: transform 0.15s ease;
+    }
+
+    .menu button:hover {
+      transform: translateY(-3px);
+    }
+
+    .menu button:nth-child(1) {
+      background: var(--pink);
+    }
+
+    .menu button:nth-child(2) {
+      background: var(--blue);
+    }
+
+    .menu button:nth-child(3) {
+      background: var(--green);
+    }
+
+    .menu button:nth-child(4) {
+      background: var(--purple);
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.78);
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      border-radius: 30px;
+      padding: 22px;
+      box-shadow: 0 8px 0 rgba(83, 132, 145, 0.12);
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .game-title {
+      margin: 0;
+      color: #547a87;
+      font-size: 25px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      min-width: 112px;
+      padding: 9px 15px;
+      border-radius: 18px;
+      text-align: center;
+      font-weight: 800;
+      background: var(--yellow);
+      color: #776139;
+    }
+
+    .stat.timer {
+      background: #ffe0e3;
+      color: #c24f56;
+    }
+
+    .stat.score {
+      background: #dff3d8;
+      color: #4d8a54;
+    }
+
+    .question-card {
+      max-width: 740px;
+      margin: 24px auto;
+      padding: 28px 18px;
+      text-align: center;
+      background: var(--cream);
+      border: 3px dashed #f1c971;
+      border-radius: 26px;
+    }
+
+    .question {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #615b64;
+      font-size: clamp(30px, 7vw, 56px);
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .feedback {
+      min-height: 30px;
+      margin-top: 12px;
+      font-weight: 800;
+      color: #7d8790;
+    }
+
+    .feedback.correct {
+      color: #55a75d;
+    }
+
+    .feedback.wrong {
+      color: #e96767;
+    }
+
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(50px, 1fr));
+      gap: 12px;
+      max-width: 650px;
+      margin: 20px auto 0;
+    }
+
+    .answer-btn {
+      min-height: 60px;
+      border: 0;
+      border-radius: 18px;
+      background: #fff;
+      color: #60717d;
+      border: 3px solid #d7ebed;
+      cursor: pointer;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 4px 0 #c2dfe1;
+      transition: transform 0.1s ease, background 0.1s ease;
+    }
+
+    .answer-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      background: #f0fbff;
+    }
+
+    .answer-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .restart-btn,
+    .back-btn {
+      display: block;
+      margin: 18px auto 0;
+      border: 0;
+      border-radius: 18px;
+      padding: 12px 22px;
+      background
