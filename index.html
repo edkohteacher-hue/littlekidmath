@@ -3,97 +3,110 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>수학 게임 선택</title>
+  <title>숲속 꼬마 수학 게임</title>
 
   <style>
+    :root {
+      --text: #4e5361;
+      --title: #487889;
+      --white: rgba(255, 255, 255, 0.88);
+      --pink: #ffd9e5;
+      --blue: #cfeeff;
+      --green: #dff4cf;
+      --purple: #eadcff;
+      --cream: #fff8e8;
+      --brown: #9b6435;
+    }
+
     * {
       box-sizing: border-box;
     }
 
+    html,
     body {
+      min-height: 100%;
       margin: 0;
+    }
+
+    body {
       min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(#c9efff, #e1f4d7);
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      color: var(--text);
+      background: linear-gradient(
+        #c9efff 0%,
+        #eafaff 53%,
+        #e1f4d7 100%
+      );
+    }
+
+    button {
+      font: inherit;
     }
 
     .app {
-      width: min(1000px, 100%);
+      width: min(1180px, 100%);
+      min-height: 100vh;
       margin: 0 auto;
-      padding: 30px 18px;
+      padding: 18px;
+    }
+
+    .title {
+      margin: 8px 0 18px;
+      color: var(--title);
+      text-align: center;
+      font-size: clamp(28px, 5vw, 42px);
+      letter-spacing: -1px;
+    }
+
+    .home-screen {
+      display: block;
+      margin-bottom: 18px;
+    }
+
+    .home-card {
+      padding: 34px 20px;
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.8);
       text-align: center;
     }
 
-    h1 {
-      color: #487889;
+    .home-tree {
+      margin-bottom: 7px;
+      font-size: 72px;
+      line-height: 1;
     }
 
-    .home {
-      padding: 30px 18px;
-      border-radius: 28px;
-      background: rgba(255, 255, 255, 0.8);
+    .home-card h2 {
+      margin: 0;
+      color: #547a87;
+      font-size: clamp(24px, 4vw, 32px);
     }
 
-    .tree {
-      font-size: 70px;
+    .home-card p {
+      margin: 11px 0 0;
+      color: #7c8a91;
+      font-size: 16px;
+      font-weight: bold;
     }
 
     .menu {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 14px;
-      margin-top: 18px;
+      margin-bottom: 18px;
     }
 
-    button {
-      min-height: 80px;
+    .menu button {
+      min-height: 84px;
       border: 3px solid white;
-      border-radius: 22px;
+      border-radius: 24px;
+      color: #4f5b67;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: bold;
+      box-shadow: 0 4px 0 rgba(90, 120, 130, 0.12);
+      transition: transform 0.15s ease;
     }
 
-    button:nth-child(1) {
-      background: #ffd9e5;
-    }
-
-    button:nth-child(2) {
-      background: #cfeeff;
-    }
-
-    button:nth-child(3) {
-      background: #dff4cf;
-    }
-
-    button:nth-child(4) {
-      background: #eadcff;
-    }
-
-    @media (max-width: 700px) {
-      .menu {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <main class="app">
-    <h1>숲속 꼬마 수학 게임</h1>
-
-    <section class="home">
-      <div class="tree">🌳</div>
-      <h2>어떤 게임을 해 볼까요?</h2>
-      <p>재미있는 수학 게임을 골라 보세요.</p>
-    </section>
-
-    <div class="menu">
-      <button type="button">세 수의 덧셈</button>
-      <button type="button">세 수의 뺄셈</button>
-      <button type="button">도토리 10 만들기</button>
-      <button type="button">두 사람 대결</button>
-    </div>
-  </main>
-</body>
-</html>
+    .menu button:hover
