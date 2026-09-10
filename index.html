@@ -2,342 +2,771 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>숲속 꼬마 수학 게임</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Arial,"Noto Sans KR",sans-serif;color:#4e5361;background:linear-gradient(#c9efff,#eafaff 52%,#e1f4d7)}
+html,body{margin:0;min-height:100%}
+body{
+  min-height:100vh;color:#5b5266;
+  font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;
+  background:linear-gradient(#bfe8ff 0%,#e8f8ff 42%,#f6fce9 70%,#ddf1c6 100%);
+  background-attachment:fixed;
+}
 button{font:inherit}
-.app{width:min(1100px,100%);margin:0 auto;padding:16px}
-.title{margin:10px 0 16px;text-align:center;color:#487889;font-size:34px}
-.home-card{padding:28px 18px;border:3px solid #fff;border-radius:28px;background:rgba(255,255,255,.82);text-align:center}
-.home-card h2{margin:8px 0 6px;color:#547a87}
-.home-card p{margin:0;font-weight:bold;color:#7c8a91}
-.tree-emoji{font-size:64px;line-height:1}
-.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
-.menu button{min-height:80px;border:3px solid #fff;border-radius:22px;cursor:pointer;font-size:16px;font-weight:bold;box-shadow:0 4px 0 rgba(80,120,130,.15)}
-.menu button:nth-child(1){background:#ffd9e5}
-.menu button:nth-child(2){background:#cfeeff}
-.menu button:nth-child(3){background:#dff4cf}
-.menu button:nth-child(4){background:#eadcff}
+
+/* 배경 장식 */
+.cloud{position:fixed;z-index:0;background:#fff;border-radius:999px;opacity:.8}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.c1{width:120px;height:42px;top:46px;left:5%;animation:float 9s ease-in-out infinite}
+.c1::before{width:58px;height:58px;top:-26px;left:16px}
+.c1::after{width:42px;height:42px;top:-16px;left:62px}
+.c2{width:96px;height:34px;top:120px;right:7%;animation:float 11s ease-in-out infinite reverse}
+.c2::before{width:48px;height:48px;top:-22px;left:12px}
+.c2::after{width:34px;height:34px;top:-12px;left:50px}
+.c3{width:80px;height:30px;top:300px;left:12%;opacity:.55;animation:float 13s ease-in-out infinite}
+.c3::before{width:40px;height:40px;top:-18px;left:10px}
+.c3::after{width:28px;height:28px;top:-10px;left:42px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+.app{position:relative;z-index:1;width:min(1120px,100%);margin:0 auto;padding:16px 16px 40px}
+
+.title{
+  margin:10px 0 16px;text-align:center;color:#4b7f96;
+  font-size:clamp(26px,5vw,40px);letter-spacing:-1px;
+  text-shadow:0 3px 0 #fff,0 6px 0 rgba(120,165,180,.25);
+  animation:wiggle 4s ease-in-out infinite;
+}
+@keyframes wiggle{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1deg)}}
+
+.card{
+  background:rgba(255,255,255,.9);border:4px solid #fff;border-radius:34px;
+  box-shadow:0 10px 0 rgba(120,160,175,.16);padding:24px 20px;
+}
+.home-card{text-align:center}
+.mascot{font-size:62px;line-height:1;animation:hop 1.8s ease-in-out infinite}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.home-card h2{margin:12px 0 6px;color:#4f8698;font-size:clamp(21px,3.5vw,28px)}
+.home-card p{margin:0;color:#8d97a0;font-weight:bold;font-size:15px}
+
+.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:20px}
+.menu-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  min-height:104px;padding:10px;border:4px solid #fff;border-radius:26px;cursor:pointer;
+  color:#59626e;font-size:16px;font-weight:800;line-height:1.3;
+  box-shadow:0 6px 0 rgba(120,160,175,.22);transition:transform .12s ease;
+}
+.menu-btn .ico{font-size:30px}
+.menu-btn:hover{transform:translateY(-4px)}
+.menu-btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(120,160,175,.22)}
+.menu-btn.b1{background:#ffd9e6}
+.menu-btn.b2{background:#d3ebff}
+.menu-btn.b3{background:#dcf4cd}
+.menu-btn.b4{background:#e9ddff}
+
 .screen{display:none}
 .screen.active{display:block}
-.panel{padding:18px;border:3px solid #fff;border-radius:28px;background:rgba(255,255,255,.85)}
-.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.head h2{margin:0;color:#547a87}
-.stats{display:flex;gap:8px}
-.stat{min-width:104px;padding:8px 12px;border-radius:16px;text-align:center;font-weight:bold;background:#ffe0e3;color:#c24f56}
-.stat.sc{background:#dff3d8;color:#4d8a54}
-.qcard{max-width:700px;margin:18px auto;padding:22px 14px;border:3px dashed #f1c971;border-radius:24px;background:#fff8e8;text-align:center}
-.q{min-height:64px;display:grid;place-items:center;font-size:44px;font-weight:900;color:#615b64}
-.fb{min-height:26px;margin-top:10px;font-weight:bold}
-.fb.ok{color:#55a75d}
-.fb.no{color:#e96767}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:620px;margin:16px auto}
-.ans{min-height:56px;border:3px solid #d7ebed;border-radius:16px;background:#fff;color:#60717d;cursor:pointer;font-size:22px;font-weight:900;box-shadow:0 4px 0 #c2dfe1}
-.ans:disabled{opacity:.45;cursor:not-allowed}
-.btn{display:block;margin:12px auto 0;padding:11px 20px;border:0;border-radius:16px;background:#91cfe0;color:#fff;cursor:pointer;font-weight:bold}
-.btn.back{background:#b8b2d8}
-.forest{position:relative;min-height:620px;overflow:hidden;border-radius:26px;background:linear-gradient(#bcecff,#eafaff 62%,#d8f0c9 62%,#d8f0c9)}
-.ground{position:absolute;left:5%;right:5%;bottom:92px;height:46px;border-radius:50%;background:rgba(117,158,103,.22)}
-.tree{position:absolute;top:52px;left:50%;width:min(660px,94%);height:450px;transform:translateX(-50%)}
-.crown{position:absolute;top:0;left:2%;right:2%;height:292px;border:10px solid #7fc05a;border-radius:48% 52% 45% 50%;background:#a9dd77;box-shadow:inset 34px 28px 0 rgba(230,248,190,.55)}
-.trunk{position:absolute;bottom:0;left:36%;width:28%;height:225px;border:8px solid #b98a5c;border-radius:30px 30px 16px 16px;background:#d2a473;clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
-.branch{position:absolute;z-index:2;height:16px;border-radius:100%;background:#c2926040;transform-origin:left center}
-.branch.b1{top:150px;left:38%;width:210px;transform:rotate(-20deg)}
-.branch.b2{top:172px;right:34%;width:200px;transform:rotate(21deg)}
-.branch.b3{top:228px;left:25%;width:160px;transform:rotate(19deg)}
-.branch.b4{top:236px;right:25%;width:155px;transform:rotate(-23deg)}
-.acorn{position:absolute;z-index:5;width:52px;height:60px;padding:0;border:0;background:transparent;cursor:pointer;transform:rotate(var(--r,0deg));transition:transform .15s ease,opacity .4s ease}
-.acorn:hover{transform:rotate(var(--r,0deg)) scale(1.12)}
+
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.bar h2{margin:0;color:#4f8698;font-size:clamp(19px,3vw,25px)}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{
+  min-width:96px;padding:8px 13px;border-radius:18px;text-align:center;
+  font-weight:800;font-size:13px;line-height:1.5;background:#fff3cd;color:#8a7440;
+  border:3px solid #fff;
+}
+.stat strong{display:block;font-size:19px}
+.stat.t{background:#ffe2e6;color:#c8626a}
+.stat.s{background:#ddf3dd;color:#4f8c58}
+.stat.c{background:#e6e2ff;color:#6f68a8}
+
+.back{
+  border:3px solid #fff;border-radius:18px;padding:9px 16px;cursor:pointer;
+  background:#c8c2e8;color:#fff;font-weight:800;box-shadow:0 4px 0 rgba(120,160,175,.22);
+}
+.back:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(120,160,175,.22)}
+
+.qcard{
+  position:relative;max-width:700px;margin:18px auto;padding:26px 18px;
+  border:4px dashed #f3cf85;border-radius:30px;background:#fffaf0;text-align:center;
+}
+.qcard .tape{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:24px}
+.q{min-height:76px;display:grid;place-items:center;color:#5d5766;font-size:clamp(30px,7vw,52px);font-weight:900;letter-spacing:2px}
+.fb{min-height:26px;margin-top:10px;font-weight:800;font-size:15px;color:#8d959d}
+.fb.ok{color:#54a55e}
+.fb.no{color:#e57b7b}
+.shake{animation:shake .38s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;max-width:620px;margin:0 auto}
+.ans{
+  min-height:60px;border:4px solid #fff;border-radius:20px;cursor:pointer;
+  color:#5c6773;font-size:23px;font-weight:900;
+  box-shadow:0 5px 0 rgba(120,160,175,.22);transition:transform .1s ease;
+}
+.ans:hover:not(:disabled){transform:translateY(-3px)}
+.ans:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 rgba(120,160,175,.22)}
+.ans:nth-child(5n+1){background:#ffe0ea}
+.ans:nth-child(5n+2){background:#e0f0ff}
+.ans:nth-child(5n+3){background:#e3f7d6}
+.ans:nth-child(5n+4){background:#fff3cf}
+.ans:nth-child(5n+5){background:#ece2ff}
+.ans.bad{background:#eee3e5;color:#bda6ab;transform:rotate(-4deg);opacity:.65;cursor:not-allowed}
+.ans.good{background:#c6f2d1;color:#3f8a52;animation:pop .45s ease}
+.ans:disabled{cursor:not-allowed}
+@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.22)}100%{transform:scale(1)}}
+
+.again{
+  display:block;margin:18px auto 0;padding:12px 24px;border:4px solid #fff;border-radius:20px;
+  background:#8fd3e6;color:#fff;cursor:pointer;font-weight:800;
+  box-shadow:0 5px 0 rgba(120,160,175,.22);
+}
+.again:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(120,160,175,.22)}
+
+/* 도토리 숲 */
+.forest{position:relative;min-height:640px;overflow:hidden;border-radius:28px;
+  background:linear-gradient(#c7ecff 0%,#eaf9ff 58%,#d9f0c6 58%,#cbe9b4 100%)}
+.hill{position:absolute;left:-8%;bottom:96px;width:60%;height:120px;border-radius:50%;background:rgba(150,205,140,.45)}
+.hill.r{left:auto;right:-10%;bottom:104px;width:55%;background:rgba(140,200,130,.35)}
+.flower{position:absolute;bottom:30px;font-size:22px}
+.tree{position:absolute;top:52px;left:50%;width:min(680px,94%);height:470px;transform:translateX(-50%)}
+.crown{position:absolute;top:0;left:3%;right:3%;height:300px;border:9px solid #79b055;border-radius:48% 52% 45% 50%;
+  background:#95cf66;box-shadow:inset 0 -24px 0 rgba(80,150,72,.16),inset 38px 32px 0 rgba(226,250,183,.5)}
+.crown::before,.crown::after{content:"";position:absolute;border-radius:50%;background:rgba(232,250,186,.6)}
+.crown::before{width:150px;height:70px;top:60px;left:16%;transform:rotate(-15deg)}
+.crown::after{width:130px;height:60px;top:150px;right:14%;transform:rotate(17deg)}
+.trunk{position:absolute;bottom:0;left:36%;width:28%;height:260px;border:8px solid #7d4d26;
+  border-radius:30px 30px 16px 16px;background:#a97243;clip-path:polygon(20% 0,80% 0,100% 100%,0 100%)}
+.branch{position:absolute;z-index:2;height:16px;border-radius:100%;background:#84532a;transform-origin:left center}
+.b1{top:158px;left:38%;width:215px;transform:rotate(-20deg)}
+.b2{top:180px;right:35%;width:205px;transform:rotate(21deg)}
+.b3{top:236px;left:25%;width:160px;transform:rotate(19deg)}
+.b4{top:244px;right:25%;width:155px;transform:rotate(-23deg)}
+
+.acorn{position:absolute;z-index:5;width:52px;height:60px;padding:0;border:0;background:transparent;
+  cursor:pointer;transform:rotate(var(--rot,0deg));transition:transform .16s ease,opacity .5s ease}
+.acorn:hover:not(:disabled){transform:rotate(var(--rot,0deg)) scale(1.14)}
 .acorn:disabled{pointer-events:none}
-.cap{position:absolute;top:0;left:4px;width:44px;height:20px;border:3px solid #6fa84a;border-radius:50% 50% 30% 30%;background:#8fc765;pointer-events:none}
-.cap::after{content:"";position:absolute;top:-13px;left:18px;width:6px;height:15px;border-radius:50%;background:#6fa84a}
-.body{position:absolute;top:15px;left:3px;width:46px;height:45px;display:grid;place-items:center;border:4px solid #c08a4e;border-radius:46% 46% 50% 50%;background:#f7e3c6;color:#8a5323;font-size:22px;font-weight:900;pointer-events:none}
-.acorn.sel{filter:drop-shadow(0 0 8px #ffd45c);transform:rotate(var(--r,0deg)) scale(1.2)}
-.acorn.got{opacity:0;transform:translate(170px,330px) scale(.3)}
-.squirrel{position:absolute;z-index:10;bottom:80px;left:16%;width:104px;height:104px;display:grid;place-items:center;border:4px solid #e7a7bb;border-radius:48%;background:#fbd3de;font-size:56px;opacity:0}
-.squirrel.show{animation:steal 1.2s ease both}
-@keyframes steal{0%{opacity:0;transform:translateX(-70px)}30%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(18px)}100%{opacity:0;transform:translateX(-60px)}}
-.basket{position:absolute;z-index:8;right:6%;bottom:20px;width:176px;min-height:112px;padding:28px 12px 12px;border:5px solid #d2a06a;border-radius:14px 14px 32px 32px;background:#f2d3a4;text-align:center}
-.handle{position:absolute;top:-38px;left:18px;right:18px;height:62px;border:7px solid #d2a06a;border-bottom:0;border-radius:50% 50% 0 0}
-.basket b{color:#8a5b31}
-.bnums{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:8px;color:#8a5b31;font-size:18px;font-weight:900}
-.msg{position:absolute;bottom:24px;left:18px;max-width:42%;padding:12px 15px;border-radius:16px;background:rgba(255,255,255,.9);color:#66806f;font-weight:bold}
+.cap{position:absolute;top:1px;left:6px;width:40px;height:17px;border:3px solid #5d9a41;
+  border-radius:50% 50% 35% 35%;background:#7fb551;pointer-events:none}
+.cap::after{content:"";position:absolute;top:-14px;left:17px;width:7px;height:16px;border-radius:50%;
+  background:#62a244;transform:rotate(-10deg)}
+.bodyn{position:absolute;top:12px;left:3px;width:46px;height:46px;display:grid;place-items:center;
+  border:4px solid #e0575b;border-radius:50%;background:#fffcf2;color:#c33d40;font-size:21px;font-weight:900;
+  box-shadow:inset 0 -5px 0 #ffe6dc;pointer-events:none}
+.acorn.sel{filter:drop-shadow(0 0 9px #ffd45c);transform:rotate(var(--rot,0deg)) scale(1.22)}
+.acorn.got{opacity:0;transform:translate(180px,330px) rotate(340deg) scale(.25)}
+
+.squirrel{position:absolute;z-index:10;left:14%;bottom:74px;width:104px;height:104px;display:grid;place-items:center;
+  border:4px solid #ee9bb4;border-radius:48% 48% 45% 45%;background:#ffc2d4;font-size:52px;opacity:0;pointer-events:none}
+.squirrel.show{animation:steal 1.25s ease both}
+@keyframes steal{0%{opacity:0;transform:translateX(-80px)}30%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(18px)}100%{opacity:0;transform:translateX(-70px)}}
+
+.basket{position:absolute;z-index:8;right:5%;bottom:22px;width:178px;min-height:118px;padding:30px 12px 14px;
+  border:5px solid #b9803f;border-radius:14px 14px 34px 34px;background:#efc182;text-align:center}
+.basket-h{position:absolute;top:-40px;left:18px;right:18px;height:66px;border:7px solid #a56e39;border-bottom:0;border-radius:50% 50% 0 0}
+.basket-t{position:relative;color:#8a5629;font-size:15px;font-weight:900}
+.basket-n{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:8px;
+  color:#8a4e25;font-size:17px;font-weight:900}
+.basket-n span{background:#fff7e6;border:2px solid #d9a566;border-radius:50%;width:26px;height:26px;display:grid;place-items:center}
+.msg{position:absolute;bottom:24px;left:18px;max-width:40%;padding:12px 15px;border-radius:20px;
+  border:3px solid #fff;background:rgba(255,255,255,.9);color:#63806c;font-weight:800;font-size:14px}
+
+/* 대결 */
 .vs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.pcard{padding:16px;border:3px solid #fff;border-radius:22px}
-.p1{background:#fff0f4}
-.p2{background:#edf7ff}
-.pcard h3{margin:0 0 10px;color:#607181}
-.pscore{margin-bottom:10px;font-size:20px;font-weight:900}
-.pq{min-height:104px;display:grid;place-items:center;padding:10px;border-radius:16px;background:rgba(255,255,255,.8);font-size:32px;font-weight:900;color:#5d626e}
-.vs .grid{gap:6px;margin:12px 0 0;max-width:none}
-.vs .ans{min-height:46px;font-size:17px;border-radius:12px}
-.winner{margin-top:16px;padding:14px;border-radius:18px;background:#fff5c7;color:#80642d;font-size:22px;font-weight:900;text-align:center}
-@media (max-width:800px){.menu{grid-template-columns:repeat(2,1fr)}.vs{grid-template-columns:1fr}}
+.p{padding:16px;border:4px solid #fff;border-radius:26px}
+.p1{background:#fff1f5}
+.p2{background:#eef7ff}
+.p h3{margin:0 0 10px;color:#5d6c7a;font-size:18px}
+.pscore{margin-bottom:10px;font-size:19px;font-weight:900}
+.pq{min-height:104px;display:grid;place-items:center;padding:10px;border-radius:20px;border:3px solid #fff;
+  background:rgba(255,255,255,.85);color:#5d626e;font-size:clamp(22px,4vw,34px);font-weight:900;text-align:center}
+.vs .grid{grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
+.vs .ans{min-height:46px;border-radius:14px;font-size:17px;border-width:3px}
+.win{margin-top:16px;padding:16px;border-radius:24px;border:4px solid #fff;background:#fff4c4;color:#84683a;
+  font-size:21px;font-weight:900;text-align:center}
+
+@media (max-width:820px){
+  .menu{grid-template-columns:repeat(2,1fr)}
+  .vs{grid-template-columns:1fr}
+  .forest{min-height:700px}
+  .msg{max-width:46%;font-size:12px}
+}
+@media (max-width:520px){
+  .app{padding:10px}
+  .card{padding:14px;border-radius:26px}
+  .menu{gap:8px}
+  .menu-btn{min-height:86px;font-size:13px;border-radius:20px}
+  .grid{gap:7px}
+  .ans{min-height:52px;font-size:19px;border-radius:16px}
+  .tree{top:70px;transform:translateX(-50%) scale(.86);transform-origin:top center}
+  .basket{right:2%;transform:scale(.8);transform-origin:bottom right}
+  .squirrel{left:2%;transform:scale(.8)}
+  .msg{left:10px;bottom:12px;max-width:48%;padding:9px}
+}
 </style>
 </head>
 <body>
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="cloud c3"></div>
+
 <main class="app">
-<h1 class="title">숲속 꼬마 수학 게임</h1>
+  <h1 class="title">숲속 꼬마 수학 게임</h1>
 
-<section id="home">
-  <div class="home-card">
-    <div class="tree-emoji">🌳</div>
-    <h2>어떤 게임을 해 볼까요?</h2>
-    <p>재미있는 수학 게임을 골라 보세요.</p>
-  </div>
-  <nav class="menu">
-    <button type="button" data-go="add">세 수의 덧셈</button>
-    <button type="button" data-go="sub">세 수의 뺄셈</button>
-    <button type="button" data-go="acorn">도토리 10 만들기</button>
-    <button type="button" data-go="vs">두 사람 대결</button>
-  </nav>
-</section>
+  <section id="home">
+    <div class="card home-card">
+      <div class="mascot">🐿️</div>
+      <h2>어떤 게임을 해 볼까요?</h2>
+      <p>틀려도 괜찮아요. 맞힐 때까지 다시 골라 볼 수 있어요.</p>
 
-<section id="add" class="screen">
-  <div class="panel">
-    <div class="head"><h2>세 수의 덧셈</h2>
-      <div class="stats"><div class="stat">시간<br><strong id="add-t">02:00</strong></div>
-      <div class="stat sc">점수<br><strong id="add-s">0점</strong></div></div></div>
-    <div class="qcard"><div id="add-q" class="q"></div><div id="add-f" class="fb"></div></div>
-    <div id="add-a" class="grid"></div>
-    <button class="btn" type="button" data-restart="add">다시 시작</button>
-    <button class="btn back" type="button" data-back="1">게임 선택으로 돌아가기</button>
-  </div>
-</section>
-
-<section id="sub" class="screen">
-  <div class="panel">
-    <div class="head"><h2>세 수의 뺄셈</h2>
-      <div class="stats"><div class="stat">시간<br><strong id="sub-t">02:00</strong></div>
-      <div class="stat sc">점수<br><strong id="sub-s">0점</strong></div></div></div>
-    <div class="qcard"><div id="sub-q" class="q"></div><div id="sub-f" class="fb"></div></div>
-    <div id="sub-a" class="grid"></div>
-    <button class="btn" type="button" data-restart="sub">다시 시작</button>
-    <button class="btn back" type="button" data-back="1">게임 선택으로 돌아가기</button>
-  </div>
-</section>
-
-<section id="acorn" class="screen">
-  <div class="panel">
-    <div class="head"><h2>도토리를 모아 10 만들기</h2>
-      <div class="stats"><div class="stat">시간<br><strong id="ac-t">00:00</strong></div>
-      <div class="stat sc">모은 도토리<br><strong id="ac-c">0개</strong></div></div></div>
-    <div class="forest">
-      <div class="ground"></div>
-      <div class="tree">
-        <div class="crown"></div>
-        <div class="trunk"></div>
-        <div class="branch b1"></div><div class="branch b2"></div>
-        <div class="branch b3"></div><div class="branch b4"></div>
-        <div id="field"></div>
+      <div class="menu">
+        <button type="button" class="menu-btn b1" data-go="add">
+          <span class="ico">🍓</span>세 수의 덧셈
+        </button>
+        <button type="button" class="menu-btn b2" data-go="sub">
+          <span class="ico">🫐</span>세 수의 뺄셈
+        </button>
+        <button type="button" class="menu-btn b3" data-go="acorn">
+          <span class="ico">🌰</span>도토리 10 만들기
+        </button>
+        <button type="button" class="menu-btn b4" data-go="vs">
+          <span class="ico">🏆</span>두 사람 대결
+        </button>
       </div>
-      <div id="squirrel" class="squirrel">🐿️</div>
-      <div class="basket"><div class="handle"></div><b>도토리 바구니</b>
-        <div id="bnums" class="bnums"></div></div>
-      <div id="ac-m" class="msg">합해서 10이 되는 도토리 두 개를 눌러 보세요.</div>
     </div>
-    <button class="btn" type="button" data-restart="acorn">새 나무 만들기</button>
-    <button class="btn back" type="button" data-back="1">게임 선택으로 돌아가기</button>
-  </div>
-</section>
+  </section>
 
-<section id="vs" class="screen">
-  <div class="panel">
-    <div class="head"><h2>두 사람 대결 모드</h2>
-      <div class="stats"><div class="stat">남은 시간<br><strong id="vs-t">03:00</strong></div></div></div>
-    <div class="vs">
-      <div class="pcard p1"><h3>1번 선수</h3>
-        <div id="p1-s" class="pscore">점수: 0점</div>
-        <div id="p1-q" class="pq"></div><div id="p1-a" class="grid"></div>
-        <div id="p1-f" class="fb"></div></div>
-      <div class="pcard p2"><h3>2번 선수</h3>
-        <div id="p2-s" class="pscore">점수: 0점</div>
-        <div id="p2-q" class="pq"></div><div id="p2-a" class="grid"></div>
-        <div id="p2-f" class="fb"></div></div>
+  <section id="add" class="screen">
+    <div class="card">
+      <div class="bar">
+        <h2>🍓 세 수의 덧셈</h2>
+        <div class="stats">
+          <div class="stat t">시간<strong id="add-time">02:00</strong></div>
+          <div class="stat s">점수<strong id="add-score">0점</strong></div>
+          <div class="stat c">연속<strong id="add-combo">0</strong></div>
+        </div>
+        <button type="button" class="back" data-back="1">숲으로 돌아가기</button>
+      </div>
+      <div class="qcard" id="add-card">
+        <div class="tape">🎀</div>
+        <div class="q" id="add-q"></div>
+        <div class="fb" id="add-fb"></div>
+      </div>
+      <div class="grid" id="add-ans"></div>
+      <button type="button" class="again" data-restart="add">다시 시작</button>
     </div>
-    <div id="vs-w" class="winner" hidden></div>
-    <button class="btn" type="button" data-restart="vs">대결 다시 시작</button>
-    <button class="btn back" type="button" data-back="1">게임 선택으로 돌아가기</button>
-  </div>
-</section>
+  </section>
+
+  <section id="sub" class="screen">
+    <div class="card">
+      <div class="bar">
+        <h2>🫐 세 수의 뺄셈</h2>
+        <div class="stats">
+          <div class="stat t">시간<strong id="sub-time">02:00</strong></div>
+          <div class="stat s">점수<strong id="sub-score">0점</strong></div>
+          <div class="stat c">연속<strong id="sub-combo">0</strong></div>
+        </div>
+        <button type="button" class="back" data-back="1">숲으로 돌아가기</button>
+      </div>
+      <div class="qcard" id="sub-card">
+        <div class="tape">🎀</div>
+        <div class="q" id="sub-q"></div>
+        <div class="fb" id="sub-fb"></div>
+      </div>
+      <div class="grid" id="sub-ans"></div>
+      <button type="button" class="again" data-restart="sub">다시 시작</button>
+    </div>
+  </section>
+
+  <section id="acorn" class="screen">
+    <div class="card">
+      <div class="bar">
+        <h2>🌰 도토리를 모아 10 만들기</h2>
+        <div class="stats">
+          <div class="stat t">시간<strong id="ac-time">00:00</strong></div>
+          <div class="stat s">모은 도토리<strong id="ac-count">0개</strong></div>
+        </div>
+        <button type="button" class="back" data-back="1">숲으로 돌아가기</button>
+      </div>
+
+      <div class="forest">
+        <div class="hill"></div>
+        <div class="hill r"></div>
+        <div class="flower" style="left:8%">🌷</div>
+        <div class="flower" style="left:26%">🍄</div>
+        <div class="flower" style="left:44%">🌼</div>
+        <div class="flower" style="left:62%">🌿</div>
+
+        <div class="tree">
+          <div class="crown"></div>
+          <div class="trunk"></div>
+          <div class="branch b1"></div>
+          <div class="branch b2"></div>
+          <div class="branch b3"></div>
+          <div class="branch b4"></div>
+          <div id="field"></div>
+        </div>
+
+        <div class="squirrel" id="squirrel">🐿️</div>
+
+        <div class="basket">
+          <div class="basket-h"></div>
+          <div class="basket-t">도토리 바구니</div>
+          <div class="basket-n" id="basket"></div>
+        </div>
+
+        <div class="msg" id="ac-msg">합해서 10이 되는 도토리 두 개를 눌러 보세요.</div>
+      </div>
+
+      <button type="button" class="again" data-restart="acorn">새 나무 만들기</button>
+    </div>
+  </section>
+
+  <section id="vs" class="screen">
+    <div class="card">
+      <div class="bar">
+        <h2>🏆 두 사람 대결</h2>
+        <div class="stats">
+          <div class="stat t">남은 시간<strong id="vs-time">03:00</strong></div>
+        </div>
+        <button type="button" class="back" data-back="1">숲으로 돌아가기</button>
+      </div>
+
+      <div class="vs">
+        <div class="p p1">
+          <h3>🐰 1번 선수</h3>
+          <div class="pscore" id="p1-score">점수: 0점</div>
+          <div class="pq" id="p1-q"></div>
+          <div class="grid" id="p1-ans"></div>
+          <div class="fb" id="p1-fb"></div>
+        </div>
+        <div class="p p2">
+          <h3>🐻 2번 선수</h3>
+          <div class="pscore" id="p2-score">점수: 0점</div>
+          <div class="pq" id="p2-q"></div>
+          <div class="grid" id="p2-ans"></div>
+          <div class="fb" id="p2-fb"></div>
+        </div>
+      </div>
+
+      <div class="win" id="vs-win" hidden></div>
+      <button type="button" class="again" data-restart="vs">대결 다시 시작</button>
+    </div>
+  </section>
 </main>
 
 <script>
 "use strict";
-function $(s){return document.querySelector(s);}
-function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
-function mmss(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
-function makeKeys(box,fn){
-  box.innerHTML="";
-  for(var n=1;n<=10;n++){
-    var b=document.createElement("button");
-    b.type="button";b.className="ans";b.textContent=n;b.dataset.val=n;
-    box.appendChild(b);
+
+function $(s){ return document.querySelector(s); }
+function ri(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function fmt(t){
+  var m = Math.floor(t/60), s = t%60;
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+function shake(el){
+  el.classList.remove("shake");
+  void el.offsetWidth;
+  el.classList.add("shake");
+}
+
+/* 답 버튼 1~10 만들기 */
+function buildAnswers(box, onPick){
+  box.innerHTML = "";
+  for(var n=1; n<=10; n++){
+    (function(num){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ans";
+      b.textContent = num;
+      b.addEventListener("click", function(){ onPick(num, b); });
+      box.appendChild(b);
+    })(n);
   }
-  box.onclick=function(e){
-    var t=e.target.closest(".ans");
-    if(t&&!t.disabled){fn(Number(t.dataset.val));}
+}
+function resetAnswers(box){
+  var list = box.querySelectorAll("button");
+  for(var i=0;i<list.length;i++){
+    list[i].disabled = false;
+    list[i].className = "ans";
+  }
+}
+function lockAnswers(box, lock){
+  var list = box.querySelectorAll("button");
+  for(var i=0;i<list.length;i++){ list[i].disabled = lock; }
+}
+
+/* 덧셈 · 뺄셈 게임 */
+function makeGame(cfg){
+  var score = 0, combo = 0, left = 120, ans = 0, tid = null, over = false, ready = false;
+
+  function paint(){
+    cfg.elTime.textContent = fmt(left);
+    cfg.elScore.textContent = score + "점";
+    cfg.elCombo.textContent = combo;
+  }
+  function say(t, c){
+    cfg.elFb.textContent = t;
+    cfg.elFb.className = "fb " + (c || "");
+  }
+  function next(){
+    var p = cfg.make();
+    cfg.elQ.textContent = p.text;
+    ans = p.answer;
+    resetAnswers(cfg.elAns);
+    say("답을 골라 보세요.", "");
+  }
+  function pick(n, btn){
+    if(over || !ready){ return; }
+
+    if(n === ans){
+      score += 10;
+      combo += 1;
+      paint();
+      btn.classList.add("good");
+      lockAnswers(cfg.elAns, true);
+      say("정답이에요! +10점", "ok");
+      setTimeout(function(){ if(!over){ next(); } }, 650);
+    } else {
+      /* 틀리면 정답을 알려주지 않고 같은 문제를 계속 풉니다. */
+      combo = 0;
+      paint();
+      btn.classList.add("bad");
+      btn.disabled = true;
+      shake(cfg.elCard);
+      say("아직이에요. 다시 한 번 세어 볼까요?", "no");
+    }
+  }
+  function finish(){
+    clearInterval(tid);
+    over = true;
+    lockAnswers(cfg.elAns, true);
+    cfg.elQ.textContent = "참 잘했어요!";
+    say("최종 점수는 " + score + "점이에요.", "ok");
+  }
+
+  return {
+    start: function(){
+      clearInterval(tid);
+      score = 0; combo = 0; left = 120; over = false; ready = true;
+      if(cfg.elAns.children.length === 0){ buildAnswers(cfg.elAns, pick); }
+      paint();
+      next();
+      tid = setInterval(function(){
+        left -= 1;
+        if(left <= 0){ left = 0; paint(); finish(); return; }
+        paint();
+      }, 1000);
+    },
+    stop: function(){
+      clearInterval(tid);
+      ready = false;
+    }
   };
 }
-function lock(box,v){
-  var list=box.querySelectorAll("button");
-  for(var i=0;i<list.length;i++){list[i].disabled=v;}
+
+var addGame = makeGame({
+  elQ:$("#add-q"), elFb:$("#add-fb"), elCard:$("#add-card"),
+  elTime:$("#add-time"), elScore:$("#add-score"), elCombo:$("#add-combo"),
+  elAns:$("#add-ans"),
+  make: function(){
+    var a = ri(1,8), b = ri(1,9-a), c = ri(1,10-a-b);
+    return { text: a+" + "+b+" + "+c+" = ?", answer: a+b+c };
+  }
+});
+
+var subGame = makeGame({
+  elQ:$("#sub-q"), elFb:$("#sub-fb"), elCard:$("#sub-card"),
+  elTime:$("#sub-time"), elScore:$("#sub-score"), elCombo:$("#sub-combo"),
+  elAns:$("#sub-ans"),
+  make: function(){
+    var ansv = ri(1,8), b = ri(1,5), c = ri(1,5);
+    var a = ansv + b + c;
+    return { text: a+" − "+b+" − "+c+" = ?", answer: ansv };
+  }
+});
+
+/* 도토리 게임 */
+var spots = [
+  ["12%","88px","-10deg"],["27%","62px","8deg"],["42%","40px","-7deg"],
+  ["57%","66px","11deg"],["72%","56px","-8deg"],["84%","100px","9deg"],
+  ["19%","170px","7deg"],["34%","150px","-12deg"],["50%","172px","6deg"],
+  ["65%","156px","-9deg"],["30%","228px","-6deg"],["58%","232px","10deg"]
+];
+var acornList = [], picked = null, got = 0, acTime = 0, acTimer = null, acLock = false;
+
+function makeAcornNumbers(){
+  var arr = [];
+  for(var i=0;i<spots.length/2;i++){
+    var a = ri(1,9);
+    arr.push(a);
+    arr.push(10-a);
+  }
+  for(var j=arr.length-1;j>0;j--){
+    var k = Math.floor(Math.random()*(j+1));
+    var tmp = arr[j]; arr[j] = arr[k]; arr[k] = tmp;
+  }
+  return arr;
+}
+
+function buildAcorns(){
+  var field = $("#field");
+  field.innerHTML = "";
+  acornList = []; picked = null; got = 0; acTime = 0; acLock = false;
+
+  $("#basket").innerHTML = "";
+  $("#ac-count").textContent = "0개";
+  $("#ac-time").textContent = "00:00";
+  $("#ac-msg").textContent = "합해서 10이 되는 도토리 두 개를 눌러 보세요.";
+
+  var nums = makeAcornNumbers();
+
+  for(var i=0;i<spots.length;i++){
+    (function(idx){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "acorn";
+      b.style.left = spots[idx][0];
+      b.style.top = spots[idx][1];
+      b.style.setProperty("--rot", spots[idx][2]);
+      b.dataset.num = nums[idx];
+      b.setAttribute("aria-label", "숫자 " + nums[idx] + " 도토리");
+
+      var cap = document.createElement("span");
+      cap.className = "cap";
+      var body = document.createElement("span");
+      body.className = "bodyn";
+      body.textContent = nums[idx];
+
+      b.appendChild(cap);
+      b.appendChild(body);
+      b.addEventListener("click", function(){ tapAcorn(b); });
+
+      field.appendChild(b);
+      acornList.push(b);
+    })(i);
+  }
+}
+
+function toBasket(n){
+  var s = document.createElement("span");
+  s.textContent = n;
+  $("#basket").appendChild(s);
+}
+
+function tapAcorn(el){
+  if(acLock || el.disabled || el.classList.contains("got")){ return; }
+
+  if(!picked){
+    picked = el;
+    el.classList.add("sel");
+    $("#ac-msg").textContent = "도토리 " + el.dataset.num + "을 골랐어요. 짝을 찾아 주세요.";
+    return;
+  }
+  if(picked === el){
+    el.classList.remove("sel");
+    picked = null;
+    $("#ac-msg").textContent = "다시 골라 보세요.";
+    return;
+  }
+
+  acLock = true;
+  el.classList.add("sel");
+
+  var first = picked;
+  var n1 = Number(first.dataset.num);
+  var n2 = Number(el.dataset.num);
+
+  setTimeout(function(){
+    if(n1 + n2 === 10){
+      first.classList.add("got");
+      el.classList.add("got");
+      first.disabled = true;
+      el.disabled = true;
+      toBasket(n1);
+      toBasket(n2);
+      got += 2;
+      $("#ac-count").textContent = got + "개";
+      $("#ac-msg").textContent = n1 + "과 " + n2 + "를 더하면 10이에요. 잘했어요!";
+      if(got >= acornList.length){
+        clearInterval(acTimer);
+        $("#ac-msg").textContent = "도토리를 모두 모았어요! 걸린 시간은 " + fmt(acTime) + "이에요.";
+      }
+    } else {
+      var sq = $("#squirrel");
+      sq.classList.remove("show");
+      void sq.offsetWidth;
+      sq.classList.add("show");
+      $("#ac-msg").textContent = "합이 10이 아니에요. 다람쥐가 도토리를 가져갔어요!";
+      setTimeout(function(){
+        $("#ac-msg").textContent = "합해서 10이 되는 두 도토리를 다시 찾아 보세요.";
+      }, 950);
+    }
+    first.classList.remove("sel");
+    el.classList.remove("sel");
+    picked = null;
+    acLock = false;
+  }, 320);
+}
+
+function startAcorn(){
+  clearInterval(acTimer);
+  buildAcorns();
+  acTimer = setInterval(function(){
+    acTime += 1;
+    $("#ac-time").textContent = fmt(acTime);
+  }, 1000);
+}
+function stopAcorn(){
+  clearInterval(acTimer);
+}
+
+/* 두 사람 대결 */
+var players = [
+  { score:0, answer:0, q:$("#p1-q"), box:$("#p1-ans"), sc:$("#p1-score"), fb:$("#p1-fb"), name:"1번 선수" },
+  { score:0, answer:0, q:$("#p2-q"), box:$("#p2-ans"), sc:$("#p2-score"), fb:$("#p2-fb"), name:"2번 선수" }
+];
+var vsLeft = 180, vsTimer = null, vsOver = true;
+
+function vsMake(){
+  var t = ri(1,4);
+  if(t === 1){
+    var a = ri(1,8), b = ri(1,9-a), c = ri(1,10-a-b);
+    return { text: a+" + "+b+" + "+c+" = ?", answer: a+b+c };
+  }
+  if(t === 2){
+    var v = ri(1,8), b2 = ri(1,5), c2 = ri(1,5);
+    return { text: (v+b2+c2)+" − "+b2+" − "+c2+" = ?", answer: v };
+  }
+  if(t === 3){
+    var n = ri(1,9);
+    return { text: n+" + ? = 10", answer: 10-n };
+  }
+  var m = ri(1,9);
+  return { text: "10 − "+m+" = ?", answer: 10-m };
+}
+
+function vsNext(p){
+  var prob = vsMake();
+  p.q.textContent = prob.text;
+  p.answer = prob.answer;
+  resetAnswers(p.box);
+  p.fb.textContent = "답을 골라 보세요.";
+  p.fb.className = "fb";
+}
+
+function vsPick(p, n, btn){
+  if(vsOver){ return; }
+
+  if(n === p.answer){
+    p.score += 10;
+    p.sc.textContent = "점수: " + p.score + "점";
+    btn.classList.add("good");
+    lockAnswers(p.box, true);
+    p.fb.textContent = "정답! +10점";
+    p.fb.className = "fb ok";
+    setTimeout(function(){ if(!vsOver){ vsNext(p); } }, 500);
+  } else {
+    /* 틀리면 정답을 알려주지 않고 같은 문제를 계속 풉니다. */
+    p.score -= 5;
+    p.sc.textContent = "점수: " + p.score + "점";
+    btn.classList.add("bad");
+    btn.disabled = true;
+    shake(p.q);
+    p.fb.textContent = "아직이에요. −5점, 다시 골라 보세요.";
+    p.fb.className = "fb no";
+  }
+}
+
+function startBattle(){
+  clearInterval(vsTimer);
+  vsOver = false;
+  vsLeft = 180;
+  $("#vs-time").textContent = "03:00";
+  $("#vs-win").hidden = true;
+
+  for(var i=0;i<players.length;i++){
+    (function(p){
+      p.score = 0;
+      p.sc.textContent = "점수: 0점";
+      if(p.box.children.length === 0){
+        buildAnswers(p.box, function(n, btn){ vsPick(p, n, btn); });
+      }
+      vsNext(p);
+    })(players[i]);
+  }
+
+  vsTimer = setInterval(function(){
+    vsLeft -= 1;
+    $("#vs-time").textContent = fmt(vsLeft);
+    if(vsLeft <= 0){
+      clearInterval(vsTimer);
+      vsOver = true;
+      lockAnswers(players[0].box, true);
+      lockAnswers(players[1].box, true);
+      var a = players[0].score, b = players[1].score;
+      var msg = "무승부예요!";
+      if(a > b){ msg = "🐰 1번 선수가 이겼어요!"; }
+      else if(b > a){ msg = "🐻 2번 선수가 이겼어요!"; }
+      $("#vs-win").hidden = false;
+      $("#vs-win").textContent = msg + " 1번 " + a + "점, 2번 " + b + "점";
+    }
+  }, 1000);
+}
+function stopBattle(){
+  clearInterval(vsTimer);
+  vsOver = true;
 }
 
 /* 화면 전환 */
-document.addEventListener("click",function(e){
-  var go=e.target.closest("[data-go]");
-  if(go){
-    var id=go.getAttribute("data-go");
-    $("#home").style.display="none";
-    document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active");});
-    document.getElementById(id).classList.add("active");
-    startGame(id);
-    window.scrollTo(0,0);
-    return;
-  }
-  var back=e.target.closest("[data-back]");
-  if(back){
-    stopAll();
-    document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active");});
-    $("#home").style.display="block";
-    window.scrollTo(0,0);
-    return;
-  }
-  var re=e.target.closest("[data-restart]");
-  if(re){startGame(re.getAttribute("data-restart"));}
-});
-
-/* 덧셈 / 뺄셈 */
-function quiz(key,make){
-  var q=$("#"+key+"-q"),f=$("#"+key+"-f"),tt=$("#"+key+"-t"),ss=$("#"+key+"-s"),box=$("#"+key+"-a");
-  var score=0,left=120,ans=0,id=null,busy=false;
-  function draw(){tt.textContent=mmss(left);ss.textContent=score+"점";}
-  function next(){
-    var p=make();q.textContent=p.text;ans=p.answer;busy=false;
-    lock(box,false);f.textContent="답을 골라 보세요.";f.className="fb";
-  }
-  function pick(v){
-    if(busy||left<=0){return;}
-    busy=true;lock(box,true);
-    if(v===ans){score+=10;f.textContent="정답이에요! 10점을 얻었어요.";f.className="fb ok";}
-    else{f.textContent="아쉬워요. 정답은 "+ans+"이에요.";f.className="fb no";}
-    draw();
-    setTimeout(function(){if(left>0){next();}},600);
-  }
-  makeKeys(box,pick);
-  score=0;left=120;draw();next();
-  id=setInterval(function(){
-    left--;draw();
-    if(left<=0){
-      left=0;draw();clearInterval(id);busy=true;lock(box,true);
-      q.textContent="게임 끝!";f.textContent="최종 점수는 "+score+"점이에요.";f.className="fb ok";
-    }
-  },1000);
-  return id;
+function stopAll(){
+  addGame.stop();
+  subGame.stop();
+  stopAcorn();
+  stopBattle();
 }
-function addQ(){var a=rnd(1,8),b=rnd(1,10-a),c=rnd(0,10-a-b);return{text:a+" + "+b+" + "+c+" = ?",answer:a+b+c};}
-function subQ(){var a=rnd(6,10),b=rnd(1,4),c=rnd(1,a-b-1);return{text:a+" − "+b+" − "+c+" = ?",answer:a-b-c};}
-
-/* 도토리 */
-var POS=[["11%","92px","-10deg"],["26%","60px","8deg"],["41%","42px","-6deg"],["56%","60px","10deg"],
-["71%","52px","-8deg"],["84%","96px","9deg"],["17%","172px","7deg"],["32%","152px","-11deg"],
-["47%","174px","6deg"],["62%","158px","-9deg"],["77%","196px","8deg"],["40%","232px","-7deg"]];
-var acSel=null,acGot=0,acSec=0,acBusy=false;
-function acornGame(){
-  var field=$("#field");field.innerHTML="";
-  acSel=null;acGot=0;acSec=0;acBusy=false;
-  $("#bnums").innerHTML="";$("#ac-c").textContent="0개";$("#ac-t").textContent="00:00";
-  $("#ac-m").textContent="합해서 10이 되는 도토리 두 개를 눌러 보세요.";
-  var nums=[];
-  for(var i=0;i<POS.length/2;i++){var a=rnd(1,9);nums.push(a);nums.push(10-a);}
-  for(var j=nums.length-1;j>0;j--){var k=rnd(0,j);var t=nums[j];nums[j]=nums[k];nums[k]=t;}
-  POS.forEach(function(p,i){
-    var b=document.createElement("button");
-    b.type="button";b.className="acorn";
-    b.style.left=p[0];b.style.top=p[1];b.style.setProperty("--r",p[2]);
-    b.dataset.num=nums[i];
-    b.innerHTML='<span class="cap"></span><span class="body">'+nums[i]+'</span>';
-    field.appendChild(b);
-  });
-  field.onclick=function(e){
-    var t=e.target.closest(".acorn");
-    if(t&&!t.disabled){tapAcorn(t);}
-  };
-  return setInterval(function(){acSec++;$("#ac-t").textContent=mmss(acSec);},1000);
-}
-function tapAcorn(a){
-  if(acBusy||a.classList.contains("got")){return;}
-  if(!acSel){acSel=a;a.classList.add("sel");$("#ac-m").textContent="첫 번째 도토리 "+a.dataset.num+"을 골랐어요.";return;}
-  if(acSel===a){a.classList.remove("sel");acSel=null;$("#ac-m").textContent="도토리를 다시 골라 보세요.";return;}
-  acBusy=true;a.classList.add("sel");
-  var f=acSel,n1=Number(f.dataset.num),n2=Number(a.dataset.num);
-  setTimeout(function(){
-    if(n1+n2===10){
-      f.classList.add("got");a.classList.add("got");f.disabled=true;a.disabled=true;
-      $("#bnums").insertAdjacentHTML("beforeend","<span>"+n1+"</span><span>"+n2+"</span>");
-      acGot+=2;$("#ac-c").textContent=acGot+"개";
-      $("#ac-m").textContent="잘했어요! "+n1+" 와 "+n2+" 를 더하면 10이에요.";
-      if(acGot>=POS.length){$("#ac-m").textContent="모든 도토리를 모았어요! 참 잘했어요.";}
-    }else{
-      var sq=$("#squirrel");sq.classList.remove("show");void sq.offsetWidth;sq.classList.add("show");
-      $("#ac-m").textContent="합이 10이 아니에요. 다람쥐가 가져갔어요!";
-    }
-    f.classList.remove("sel");a.classList.remove("sel");acSel=null;acBusy=false;
-  },350);
-}
-
-/* 대결 */
-function vsQ(){
-  var t=rnd(1,4),n;
-  if(t===1){return addQ();}
-  if(t===2){return subQ();}
-  n=rnd(1,9);
-  if(t===3){return{text:n+" + ? = 10",answer:10-n};}
-  return{text:"10 − "+n+" = ?",answer:10-n};
-}
-function vsGame(){
-  var ps=[{q:$("#p1-q"),a:$("#p1-a"),s:$("#p1-s"),f:$("#p1-f"),score:0,ans:0},
-          {q:$("#p2-q"),a:$("#p2-a"),s:$("#p2-s"),f:$("#p2-f"),score:0,ans:0}];
-  var left=180,over=false;
-  $("#vs-t").textContent="03:00";$("#vs-w").hidden=true;
-  ps.forEach(function(p){
-    p.score=0;p.s.textContent="점수: 0점";
-    function nx(){var x=vsQ();p.q.textContent=x.text;p.ans=x.answer;p.f.textContent="답을 골라 보세요.";p.f.className="fb";}
-    makeKeys(p.a,function(v){
-      if(over){return;}
-      if(v===p.ans){p.score+=10;p.f.textContent="정답! +10점";p.f.className="fb ok";}
-      else{p.score-=10;p.f.textContent="오답! -10점";p.f.className="fb no";}
-      p.s.textContent="점수: "+p.score+"점";nx();
-    });
-    nx();
-  });
-  return setInterval(function(){
-    left--;$("#vs-t").textContent=mmss(left);
-    if(left<=0){
-      over=true;
-      ps.forEach(function(p){lock(p.a,true);});
-      var a=ps[0].score,b=ps[1].score;
-      var r=a>b?"1번 선수가 이겼어요!":(b>a?"2번 선수가 이겼어요!":"무승부예요!");
-      $("#vs-w").hidden=false;
-      $("#vs-w").textContent=r+" 1번 선수 "+a+"점, 2번 선수 "+b+"점";
-      stopAll();
-    }
-  },1000);
-}
-
-/* 타이머 관리 */
-var timers={};
-function stopAll(){for(var k in timers){clearInterval(timers[k]);}timers={};}
-function startGame(id){
+function openScreen(id){
+  var el = document.getElementById(id);
+  if(!el){ return; }
   stopAll();
-  if(id==="add"){timers.add=quiz("add",addQ);}
-  if(id==="sub"){timers.sub=quiz("sub",subQ);}
-  if(id==="acorn"){timers.acorn=acornGame();}
-  if(id==="vs"){timers.vs=vsGame();}
+  $("#home").style.display = "none";
+  var list = document.querySelectorAll(".screen");
+  for(var i=0;i<list.length;i++){ list[i].classList.remove("active"); }
+  el.classList.add("active");
+  if(id === "add"){ addGame.start(); }
+  if(id === "sub"){ subGame.start(); }
+  if(id === "acorn"){ startAcorn(); }
+  if(id === "vs"){ startBattle(); }
+  window.scrollTo(0,0);
 }
+function goHome(){
+  stopAll();
+  var list = document.querySelectorAll(".screen");
+  for(var i=0;i<list.length;i++){ list[i].classList.remove("active"); }
+  $("#home").style.display = "block";
+  window.scrollTo(0,0);
+}
+
+document.addEventListener("click", function(e){
+  var t = e.target;
+  if(!t || !t.closest){ return; }
+
+  var go = t.closest("[data-go]");
+  if(go){ openScreen(go.getAttribute("data-go")); return; }
+
+  var back = t.closest("[data-back]");
+  if(back){ goHome(); return; }
+
+  var again = t.closest("[data-restart]");
+  if(again){
+    var w = again.getAttribute("data-restart");
+    if(w === "add"){ addGame.start(); }
+    if(w === "sub"){ subGame.start(); }
+    if(w === "acorn"){ startAcorn(); }
+    if(w === "vs"){ startBattle(); }
+  }
+});
 </script>
 </body>
 </html>
