@@ -2,389 +2,342 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>숲속 꼬마 수학 게임</title>
-
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,"Noto Sans KR",sans-serif;color:#4e5361;background:linear-gradient(#c9efff,#eafaff 52%,#e1f4d7)}
+button{font:inherit}
+.app{width:min(1100px,100%);margin:0 auto;padding:16px}
+.title{margin:10px 0 16px;text-align:center;color:#487889;font-size:34px}
+.home-card{padding:28px 18px;border:3px solid #fff;border-radius:28px;background:rgba(255,255,255,.82);text-align:center}
+.home-card h2{margin:8px 0 6px;color:#547a87}
+.home-card p{margin:0;font-weight:bold;color:#7c8a91}
+.tree-emoji{font-size:64px;line-height:1}
+.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.menu button{min-height:80px;border:3px solid #fff;border-radius:22px;cursor:pointer;font-size:16px;font-weight:bold;box-shadow:0 4px 0 rgba(80,120,130,.15)}
+.menu button:nth-child(1){background:#ffd9e5}
+.menu button:nth-child(2){background:#cfeeff}
+.menu button:nth-child(3){background:#dff4cf}
+.menu button:nth-child(4){background:#eadcff}
+.screen{display:none}
+.screen.active{display:block}
+.panel{padding:18px;border:3px solid #fff;border-radius:28px;background:rgba(255,255,255,.85)}
+.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.head h2{margin:0;color:#547a87}
+.stats{display:flex;gap:8px}
+.stat{min-width:104px;padding:8px 12px;border-radius:16px;text-align:center;font-weight:bold;background:#ffe0e3;color:#c24f56}
+.stat.sc{background:#dff3d8;color:#4d8a54}
+.qcard{max-width:700px;margin:18px auto;padding:22px 14px;border:3px dashed #f1c971;border-radius:24px;background:#fff8e8;text-align:center}
+.q{min-height:64px;display:grid;place-items:center;font-size:44px;font-weight:900;color:#615b64}
+.fb{min-height:26px;margin-top:10px;font-weight:bold}
+.fb.ok{color:#55a75d}
+.fb.no{color:#e96767}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:620px;margin:16px auto}
+.ans{min-height:56px;border:3px solid #d7ebed;border-radius:16px;background:#fff;color:#60717d;cursor:pointer;font-size:22px;font-weight:900;box-shadow:0 4px 0 #c2dfe1}
+.ans:disabled{opacity:.45;cursor:not-allowed}
+.btn{display:block;margin:12px auto 0;padding:11px 20px;border:0;border-radius:16px;background:#91cfe0;color:#fff;cursor:pointer;font-weight:bold}
+.btn.back{background:#b8b2d8}
+.forest{position:relative;min-height:620px;overflow:hidden;border-radius:26px;background:linear-gradient(#bcecff,#eafaff 62%,#d8f0c9 62%,#d8f0c9)}
+.ground{position:absolute;left:5%;right:5%;bottom:92px;height:46px;border-radius:50%;background:rgba(117,158,103,.22)}
+.tree{position:absolute;top:52px;left:50%;width:min(660px,94%);height:450px;transform:translateX(-50%)}
+.crown{position:absolute;top:0;left:2%;right:2%;height:292px;border:10px solid #7fc05a;border-radius:48% 52% 45% 50%;background:#a9dd77;box-shadow:inset 34px 28px 0 rgba(230,248,190,.55)}
+.trunk{position:absolute;bottom:0;left:36%;width:28%;height:225px;border:8px solid #b98a5c;border-radius:30px 30px 16px 16px;background:#d2a473;clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+.branch{position:absolute;z-index:2;height:16px;border-radius:100%;background:#c2926040;transform-origin:left center}
+.branch.b1{top:150px;left:38%;width:210px;transform:rotate(-20deg)}
+.branch.b2{top:172px;right:34%;width:200px;transform:rotate(21deg)}
+.branch.b3{top:228px;left:25%;width:160px;transform:rotate(19deg)}
+.branch.b4{top:236px;right:25%;width:155px;transform:rotate(-23deg)}
+.acorn{position:absolute;z-index:5;width:52px;height:60px;padding:0;border:0;background:transparent;cursor:pointer;transform:rotate(var(--r,0deg));transition:transform .15s ease,opacity .4s ease}
+.acorn:hover{transform:rotate(var(--r,0deg)) scale(1.12)}
+.acorn:disabled{pointer-events:none}
+.cap{position:absolute;top:0;left:4px;width:44px;height:20px;border:3px solid #6fa84a;border-radius:50% 50% 30% 30%;background:#8fc765;pointer-events:none}
+.cap::after{content:"";position:absolute;top:-13px;left:18px;width:6px;height:15px;border-radius:50%;background:#6fa84a}
+.body{position:absolute;top:15px;left:3px;width:46px;height:45px;display:grid;place-items:center;border:4px solid #c08a4e;border-radius:46% 46% 50% 50%;background:#f7e3c6;color:#8a5323;font-size:22px;font-weight:900;pointer-events:none}
+.acorn.sel{filter:drop-shadow(0 0 8px #ffd45c);transform:rotate(var(--r,0deg)) scale(1.2)}
+.acorn.got{opacity:0;transform:translate(170px,330px) scale(.3)}
+.squirrel{position:absolute;z-index:10;bottom:80px;left:16%;width:104px;height:104px;display:grid;place-items:center;border:4px solid #e7a7bb;border-radius:48%;background:#fbd3de;font-size:56px;opacity:0}
+.squirrel.show{animation:steal 1.2s ease both}
+@keyframes steal{0%{opacity:0;transform:translateX(-70px)}30%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(18px)}100%{opacity:0;transform:translateX(-60px)}}
+.basket{position:absolute;z-index:8;right:6%;bottom:20px;width:176px;min-height:112px;padding:28px 12px 12px;border:5px solid #d2a06a;border-radius:14px 14px 32px 32px;background:#f2d3a4;text-align:center}
+.handle{position:absolute;top:-38px;left:18px;right:18px;height:62px;border:7px solid #d2a06a;border-bottom:0;border-radius:50% 50% 0 0}
+.basket b{color:#8a5b31}
+.bnums{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:8px;color:#8a5b31;font-size:18px;font-weight:900}
+.msg{position:absolute;bottom:24px;left:18px;max-width:42%;padding:12px 15px;border-radius:16px;background:rgba(255,255,255,.9);color:#66806f;font-weight:bold}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pcard{padding:16px;border:3px solid #fff;border-radius:22px}
+.p1{background:#fff0f4}
+.p2{background:#edf7ff}
+.pcard h3{margin:0 0 10px;color:#607181}
+.pscore{margin-bottom:10px;font-size:20px;font-weight:900}
+.pq{min-height:104px;display:grid;place-items:center;padding:10px;border-radius:16px;background:rgba(255,255,255,.8);font-size:32px;font-weight:900;color:#5d626e}
+.vs .grid{gap:6px;margin:12px 0 0;max-width:none}
+.vs .ans{min-height:46px;font-size:17px;border-radius:12px}
+.winner{margin-top:16px;padding:14px;border-radius:18px;background:#fff5c7;color:#80642d;font-size:22px;font-weight:900;text-align:center}
+@media (max-width:800px){.menu{grid-template-columns:repeat(2,1fr)}.vs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="app">
+<h1 class="title">숲속 꼬마 수학 게임</h1>
+
+<section id="home">
+  <div class="home-card">
+    <div class="tree-emoji">🌳</div>
+    <h2>어떤 게임을 해 볼까요?</h2>
+    <p>재미있는 수학 게임을 골라 보세요.</p>
+  </div>
+  <nav class="menu">
+    <button type="button" data-go="add">세 수의 덧셈</button>
+    <button type="button" data-go="sub">세 수의 뺄셈</button>
+    <button type="button" data-go="acorn">도토리 10 만들기</button>
+    <button type="button" data-go="vs">두 사람 대결</button>
+  </nav>
+</section>
+
+<section id="add" class="screen">
+  <div class="panel">
+    <div class="head"><h2>세 수의 덧셈</h2>
+      <div class="stats"><div class="stat">시간<br><strong id="add-t">02:00</strong></div>
+      <div class="stat sc">점수<br><strong id="add-s">0점</strong></div></div></div>
+    <div class="qcard"><div id="add-q" class="q"></div><div id="add-f" class="fb"></div></div>
+    <div id="add-a" class="grid"></div>
+    <button class="btn" type="button" data-restart="add">다시 시작</button>
+    <button class="btn back" type="button" data-back="1">게임 선택으로 돌아가기</button>
+  </div>
+</section>
+
+<section id="sub" class="screen">
+  <div class="panel">
+    <div class="head"><h2>세 수의 뺄셈</h2>
+      <div class="stats"><div class="stat">시간<br><strong id="sub-t">02:00</strong></div>
+      <div class="stat sc">점수<br><strong id="sub-s">0점</strong></div></div></div>
+    <div class="qcard"><div id="sub-q" class="q"></div><div id="sub-f" class="fb"></div></div>
+    <div id="sub-a" class="grid"></div>
+    <button class="btn" type="button" data-restart="sub">다시 시작</button>
+    <button class="btn back" type="button" data-back="1">게임 선택으로 돌아가기</button>
+  </div>
+</section>
+
+<section id="acorn" class="screen">
+  <div class="panel">
+    <div class="head"><h2>도토리를 모아 10 만들기</h2>
+      <div class="stats"><div class="stat">시간<br><strong id="ac-t">00:00</strong></div>
+      <div class="stat sc">모은 도토리<br><strong id="ac-c">0개</strong></div></div></div>
+    <div class="forest">
+      <div class="ground"></div>
+      <div class="tree">
+        <div class="crown"></div>
+        <div class="trunk"></div>
+        <div class="branch b1"></div><div class="branch b2"></div>
+        <div class="branch b3"></div><div class="branch b4"></div>
+        <div id="field"></div>
+      </div>
+      <div id="squirrel" class="squirrel">🐿️</div>
+      <div class="basket"><div class="handle"></div><b>도토리 바구니</b>
+        <div id="bnums" class="bnums"></div></div>
+      <div id="ac-m" class="msg">합해서 10이 되는 도토리 두 개를 눌러 보세요.</div>
+    </div>
+    <button class="btn" type="button" data-restart="acorn">새 나무 만들기</button>
+    <button class="btn back" type="button" data-back="1">게임 선택으로 돌아가기</button>
+  </div>
+</section>
+
+<section id="vs" class="screen">
+  <div class="panel">
+    <div class="head"><h2>두 사람 대결 모드</h2>
+      <div class="stats"><div class="stat">남은 시간<br><strong id="vs-t">03:00</strong></div></div></div>
+    <div class="vs">
+      <div class="pcard p1"><h3>1번 선수</h3>
+        <div id="p1-s" class="pscore">점수: 0점</div>
+        <div id="p1-q" class="pq"></div><div id="p1-a" class="grid"></div>
+        <div id="p1-f" class="fb"></div></div>
+      <div class="pcard p2"><h3>2번 선수</h3>
+        <div id="p2-s" class="pscore">점수: 0점</div>
+        <div id="p2-q" class="pq"></div><div id="p2-a" class="grid"></div>
+        <div id="p2-f" class="fb"></div></div>
+    </div>
+    <div id="vs-w" class="winner" hidden></div>
+    <button class="btn" type="button" data-restart="vs">대결 다시 시작</button>
+    <button class="btn back" type="button" data-back="1">게임 선택으로 돌아가기</button>
+  </div>
+</section>
+</main>
+
+<script>
+"use strict";
+function $(s){return document.querySelector(s);}
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function mmss(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+function makeKeys(box,fn){
+  box.innerHTML="";
+  for(var n=1;n<=10;n++){
+    var b=document.createElement("button");
+    b.type="button";b.className="ans";b.textContent=n;b.dataset.val=n;
+    box.appendChild(b);
+  }
+  box.onclick=function(e){
+    var t=e.target.closest(".ans");
+    if(t&&!t.disabled){fn(Number(t.dataset.val));}
+  };
+}
+function lock(box,v){
+  var list=box.querySelectorAll("button");
+  for(var i=0;i<list.length;i++){list[i].disabled=v;}
 }
 
-html,
-body {
-  margin: 0;
-  min-height: 100%;
+/* 화면 전환 */
+document.addEventListener("click",function(e){
+  var go=e.target.closest("[data-go]");
+  if(go){
+    var id=go.getAttribute("data-go");
+    $("#home").style.display="none";
+    document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active");});
+    document.getElementById(id).classList.add("active");
+    startGame(id);
+    window.scrollTo(0,0);
+    return;
+  }
+  var back=e.target.closest("[data-back]");
+  if(back){
+    stopAll();
+    document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active");});
+    $("#home").style.display="block";
+    window.scrollTo(0,0);
+    return;
+  }
+  var re=e.target.closest("[data-restart]");
+  if(re){startGame(re.getAttribute("data-restart"));}
+});
+
+/* 덧셈 / 뺄셈 */
+function quiz(key,make){
+  var q=$("#"+key+"-q"),f=$("#"+key+"-f"),tt=$("#"+key+"-t"),ss=$("#"+key+"-s"),box=$("#"+key+"-a");
+  var score=0,left=120,ans=0,id=null,busy=false;
+  function draw(){tt.textContent=mmss(left);ss.textContent=score+"점";}
+  function next(){
+    var p=make();q.textContent=p.text;ans=p.answer;busy=false;
+    lock(box,false);f.textContent="답을 골라 보세요.";f.className="fb";
+  }
+  function pick(v){
+    if(busy||left<=0){return;}
+    busy=true;lock(box,true);
+    if(v===ans){score+=10;f.textContent="정답이에요! 10점을 얻었어요.";f.className="fb ok";}
+    else{f.textContent="아쉬워요. 정답은 "+ans+"이에요.";f.className="fb no";}
+    draw();
+    setTimeout(function(){if(left>0){next();}},600);
+  }
+  makeKeys(box,pick);
+  score=0;left=120;draw();next();
+  id=setInterval(function(){
+    left--;draw();
+    if(left<=0){
+      left=0;draw();clearInterval(id);busy=true;lock(box,true);
+      q.textContent="게임 끝!";f.textContent="최종 점수는 "+score+"점이에요.";f.className="fb ok";
+    }
+  },1000);
+  return id;
+}
+function addQ(){var a=rnd(1,8),b=rnd(1,10-a),c=rnd(0,10-a-b);return{text:a+" + "+b+" + "+c+" = ?",answer:a+b+c};}
+function subQ(){var a=rnd(6,10),b=rnd(1,4),c=rnd(1,a-b-1);return{text:a+" − "+b+" − "+c+" = ?",answer:a-b-c};}
+
+/* 도토리 */
+var POS=[["11%","92px","-10deg"],["26%","60px","8deg"],["41%","42px","-6deg"],["56%","60px","10deg"],
+["71%","52px","-8deg"],["84%","96px","9deg"],["17%","172px","7deg"],["32%","152px","-11deg"],
+["47%","174px","6deg"],["62%","158px","-9deg"],["77%","196px","8deg"],["40%","232px","-7deg"]];
+var acSel=null,acGot=0,acSec=0,acBusy=false;
+function acornGame(){
+  var field=$("#field");field.innerHTML="";
+  acSel=null;acGot=0;acSec=0;acBusy=false;
+  $("#bnums").innerHTML="";$("#ac-c").textContent="0개";$("#ac-t").textContent="00:00";
+  $("#ac-m").textContent="합해서 10이 되는 도토리 두 개를 눌러 보세요.";
+  var nums=[];
+  for(var i=0;i<POS.length/2;i++){var a=rnd(1,9);nums.push(a);nums.push(10-a);}
+  for(var j=nums.length-1;j>0;j--){var k=rnd(0,j);var t=nums[j];nums[j]=nums[k];nums[k]=t;}
+  POS.forEach(function(p,i){
+    var b=document.createElement("button");
+    b.type="button";b.className="acorn";
+    b.style.left=p[0];b.style.top=p[1];b.style.setProperty("--r",p[2]);
+    b.dataset.num=nums[i];
+    b.innerHTML='<span class="cap"></span><span class="body">'+nums[i]+'</span>';
+    field.appendChild(b);
+  });
+  field.onclick=function(e){
+    var t=e.target.closest(".acorn");
+    if(t&&!t.disabled){tapAcorn(t);}
+  };
+  return setInterval(function(){acSec++;$("#ac-t").textContent=mmss(acSec);},1000);
+}
+function tapAcorn(a){
+  if(acBusy||a.classList.contains("got")){return;}
+  if(!acSel){acSel=a;a.classList.add("sel");$("#ac-m").textContent="첫 번째 도토리 "+a.dataset.num+"을 골랐어요.";return;}
+  if(acSel===a){a.classList.remove("sel");acSel=null;$("#ac-m").textContent="도토리를 다시 골라 보세요.";return;}
+  acBusy=true;a.classList.add("sel");
+  var f=acSel,n1=Number(f.dataset.num),n2=Number(a.dataset.num);
+  setTimeout(function(){
+    if(n1+n2===10){
+      f.classList.add("got");a.classList.add("got");f.disabled=true;a.disabled=true;
+      $("#bnums").insertAdjacentHTML("beforeend","<span>"+n1+"</span><span>"+n2+"</span>");
+      acGot+=2;$("#ac-c").textContent=acGot+"개";
+      $("#ac-m").textContent="잘했어요! "+n1+" 와 "+n2+" 를 더하면 10이에요.";
+      if(acGot>=POS.length){$("#ac-m").textContent="모든 도토리를 모았어요! 참 잘했어요.";}
+    }else{
+      var sq=$("#squirrel");sq.classList.remove("show");void sq.offsetWidth;sq.classList.add("show");
+      $("#ac-m").textContent="합이 10이 아니에요. 다람쥐가 가져갔어요!";
+    }
+    f.classList.remove("sel");a.classList.remove("sel");acSel=null;acBusy=false;
+  },350);
 }
 
-body {
-  min-height: 100vh;
-  font-family: Arial, "Noto Sans KR", sans-serif;
-  color: #4e5361;
-  background: linear-gradient(#c9efff, #eafaff 52%, #e1f4d7);
+/* 대결 */
+function vsQ(){
+  var t=rnd(1,4),n;
+  if(t===1){return addQ();}
+  if(t===2){return subQ();}
+  n=rnd(1,9);
+  if(t===3){return{text:n+" + ? = 10",answer:10-n};}
+  return{text:"10 − "+n+" = ?",answer:10-n};
+}
+function vsGame(){
+  var ps=[{q:$("#p1-q"),a:$("#p1-a"),s:$("#p1-s"),f:$("#p1-f"),score:0,ans:0},
+          {q:$("#p2-q"),a:$("#p2-a"),s:$("#p2-s"),f:$("#p2-f"),score:0,ans:0}];
+  var left=180,over=false;
+  $("#vs-t").textContent="03:00";$("#vs-w").hidden=true;
+  ps.forEach(function(p){
+    p.score=0;p.s.textContent="점수: 0점";
+    function nx(){var x=vsQ();p.q.textContent=x.text;p.ans=x.answer;p.f.textContent="답을 골라 보세요.";p.f.className="fb";}
+    makeKeys(p.a,function(v){
+      if(over){return;}
+      if(v===p.ans){p.score+=10;p.f.textContent="정답! +10점";p.f.className="fb ok";}
+      else{p.score-=10;p.f.textContent="오답! -10점";p.f.className="fb no";}
+      p.s.textContent="점수: "+p.score+"점";nx();
+    });
+    nx();
+  });
+  return setInterval(function(){
+    left--;$("#vs-t").textContent=mmss(left);
+    if(left<=0){
+      over=true;
+      ps.forEach(function(p){lock(p.a,true);});
+      var a=ps[0].score,b=ps[1].score;
+      var r=a>b?"1번 선수가 이겼어요!":(b>a?"2번 선수가 이겼어요!":"무승부예요!");
+      $("#vs-w").hidden=false;
+      $("#vs-w").textContent=r+" 1번 선수 "+a+"점, 2번 선수 "+b+"점";
+      stopAll();
+    }
+  },1000);
 }
 
-button {
-  font: inherit;
+/* 타이머 관리 */
+var timers={};
+function stopAll(){for(var k in timers){clearInterval(timers[k]);}timers={};}
+function startGame(id){
+  stopAll();
+  if(id==="add"){timers.add=quiz("add",addQ);}
+  if(id==="sub"){timers.sub=quiz("sub",subQ);}
+  if(id==="acorn"){timers.acorn=acornGame();}
+  if(id==="vs"){timers.vs=vsGame();}
 }
-
-.app {
-  width: min(1180px, 100%);
-  min-height: 100vh;
-  margin: 0 auto;
-  padding: 18px;
-}
-
-.title {
-  margin: 8px 0 18px;
-  color: #487889;
-  text-align: center;
-  font-size: clamp(28px, 5vw, 42px);
-}
-
-.home-card {
-  padding: 34px 20px;
-  border: 3px solid white;
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.82);
-  text-align: center;
-}
-
-.home-tree {
-  font-size: 70px;
-}
-
-.home-card h2 {
-  margin: 14px 0 0;
-  color: #547a87;
-}
-
-.home-card p {
-  margin: 12px 0 0;
-  font-weight: bold;
-}
-
-.menu {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin: 18px 0;
-}
-
-.menu button {
-  min-height: 84px;
-  border: 3px solid white;
-  border-radius: 24px;
-  cursor: pointer;
-  font-size: 17px;
-  font-weight: bold;
-  box-shadow: 0 4px 0 rgba(80, 120, 130, 0.15);
-}
-
-.menu button:nth-child(1) {
-  background: #ffd9e5;
-}
-
-.menu button:nth-child(2) {
-  background: #cfeeff;
-}
-
-.menu button:nth-child(3) {
-  background: #dff4cf;
-}
-
-.menu button:nth-child(4) {
-  background: #eadcff;
-}
-
-.screen {
-  display: none;
-}
-
-.screen.active {
-  display: block;
-}
-
-.panel {
-  padding: 22px;
-  border: 3px solid white;
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.85);
-}
-
-.game-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.game-title {
-  margin: 0;
-  color: #547a87;
-}
-
-.stats {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.stat {
-  min-width: 110px;
-  padding: 9px 14px;
-  border-radius: 17px;
-  text-align: center;
-  font-weight: bold;
-  background: #fff0b8;
-}
-
-.timer {
-  background: #ffe0e3;
-  color: #c24f56;
-}
-
-.score {
-  background: #dff3d8;
-  color: #4d8a54;
-}
-
-.question-card {
-  max-width: 740px;
-  margin: 24px auto;
-  padding: 28px 18px;
-  border: 3px dashed #f1c971;
-  border-radius: 26px;
-  background: #fff8e8;
-  text-align: center;
-}
-
-.question {
-  min-height: 70px;
-  display: grid;
-  place-items: center;
-  color: #615b64;
-  font-size: clamp(32px, 7vw, 56px);
-  font-weight: 900;
-}
-
-.feedback {
-  min-height: 28px;
-  margin-top: 12px;
-  font-weight: bold;
-}
-
-.correct {
-  color: #55a75d;
-}
-
-.wrong {
-  color: #e96767;
-}
-
-.answer-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  max-width: 650px;
-  margin: 20px auto;
-}
-
-.answer-btn {
-  min-height: 60px;
-  border: 3px solid #d7ebed;
-  border-radius: 18px;
-  background: white;
-  color: #60717d;
-  cursor: pointer;
-  font-size: 24px;
-  font-weight: 900;
-  box-shadow: 0 4px 0 #c2dfe1;
-}
-
-.answer-btn:hover:not(:disabled) {
-  background: #f0fbff;
-  transform: translateY(-2px);
-}
-
-.answer-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.restart-btn,
-.back-btn {
-  display: block;
-  margin: 16px auto 0;
-  padding: 12px 22px;
-  border: 0;
-  border-radius: 18px;
-  background: #91cfe0;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.back-btn {
-  background: #b8b2d8;
-}
-
-/* 도토리 게임 */
-.forest-game {
-  position: relative;
-  min-height: 700px;
-  overflow: hidden;
-  border-radius: 28px;
-  background: linear-gradient(
-    #bcecff 0%,
-    #eafaff 63%,
-    #d8f0c9 63%,
-    #d8f0c9 100%
-  );
-}
-
-.forest-ground {
-  position: absolute;
-  right: 4%;
-  bottom: 110px;
-  left: 4%;
-  height: 55px;
-  border-radius: 50%;
-  background: rgba(117, 158, 103, 0.22);
-}
-
-.tree {
-  position: absolute;
-  top: 78px;
-  left: 50%;
-  width: min(720px, 92%);
-  height: 505px;
-  transform: translateX(-50%);
-}
-
-.tree-crown {
-  position: absolute;
-  top: 0;
-  right: 3%;
-  left: 3%;
-  height: 310px;
-  border: 10px solid #72a84c;
-  border-radius: 48% 52% 45% 50%;
-  background: #8dc85c;
-  box-shadow:
-    inset 0 -25px 0 rgba(75, 145, 69, 0.18),
-    inset 40px 35px 0 rgba(221, 248, 174, 0.42);
-}
-
-.tree-trunk {
-  position: absolute;
-  bottom: 0;
-  left: 34%;
-  width: 32%;
-  height: 285px;
-  border: 8px solid #75451f;
-  border-radius: 35px 35px 18px 18px;
-  background: #9c6735;
-  clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
-}
-
-.branch {
-  position: absolute;
-  z-index: 2;
-  height: 18px;
-  border-radius: 100%;
-  background: #784a26;
-  transform-origin: left center;
-}
-
-.branch.one {
-  top: 165px;
-  left: 38%;
-  width: 235px;
-  transform: rotate(-21deg);
-}
-
-.branch.two {
-  top: 187px;
-  right: 35%;
-  width: 220px;
-  transform: rotate(22deg);
-}
-
-.branch.three {
-  top: 245px;
-  left: 24%;
-  width: 175px;
-  transform: rotate(20deg);
-}
-
-.branch.four {
-  top: 254px;
-  right: 24%;
-  width: 170px;
-  transform: rotate(-24deg);
-}
-
-.acorn {
-  position: absolute;
-  z-index: 5;
-  width: 54px;
-  height: 62px;
-  padding: 0;
-  border: 0;
-  cursor: pointer;
-  background: transparent;
-  transform: rotate(var(--rotate));
-}
-
-.acorn:hover {
-  transform: rotate(var(--rotate)) scale(1.12);
-}
-
-.acorn:disabled {
-  pointer-events: none;
-}
-
-.acorn-cap {
-  position: absolute;
-  top: 2px;
-  left: 5px;
-  width: 44px;
-  height: 19px;
-  border: 3px solid #568c3d;
-  border-radius: 50% 50% 35% 35%;
-  background: #75a94d;
-  pointer-events: none;
-}
-
-.acorn-body {
-  position: absolute;
-  top: 13px;
-  left: 4px;
-  width: 46px;
-  height: 47px;
-  display: grid;
-  place-items: center;
-  border: 4px solid #dc474b;
-  border-radius: 50%;
-  background: #fffdf1;
-  color: #b93436;
-  font-size: 22px;
-  font-weight: 900;
-  pointer-events: none;
-}
-
-.acorn.selected {
-  filter: drop-shadow(0 0 8px #ffd45c);
-  transform: rotate(var(--rotate)) scale(1.2);
-}
-
-.acorn.collected {
-  opacity: 0;
-  transform: translate(190px, 360px) scale(0.3);
-}
-
-.squirrel {
-  position: absolute;
-  z-index: 10;
-  bottom: 86px;
+</script>
+</body>
+</html>
